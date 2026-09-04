@@ -1,6 +1,6 @@
 ---
 name: read-back
-description: Use immediately after any write a tool reported as successful and before running anything that depends on it or calling the change done - a file edited through a shell command, a patch applied with sed or perl, a heredoc, an inline script that does a string replacement, a config rewritten in place, a bulk rename, a generated file. A shell rewrites the payload it carries, and a replacement that matches nothing exits 0, so a command can succeed having written something other than what you wrote, or nothing at all.
+description: Use immediately after any write a tool reported as successful, and before running anything that depends on it - a file edited through a shell command, a patch applied with sed or perl, a heredoc, an inline string replacement, a config rewritten in place, a bulk rename, a generated file. A shell rewrites the payload it carries, and a replacement that matches nothing exits 0.
 license: Apache-2.0
 metadata:
   version: "0.1.0"
@@ -88,12 +88,13 @@ It is also not a claim that your edit was wrong. It is a claim that the exit
 code did not tell you whether your edit was right, and that you have been
 reading it as though it did.
 
-## Related
+<!-- generated:siblings -->
 
-- `red-before-green` is the same discipline aimed at instruments rather than
-  actuators: make a check produce a positive on purpose before believing its
-  green. Between them: verify what measures, and verify what changes.
-- `claim-sweep` covers what happens after a write does land: every other
-  artifact that still asserts the fact you just changed.
-- [efaimo](https://github.com/efaimo-ai/efaimo) audits the quality and context
-  cost of MCP servers and Agent Skills, including this one.
+## Siblings
+
+Every skill in this set is about a report that was true about the wrong thing. The set: https://efaimo.ai/skills
+
+- `red-before-green` - the instrument half of the same problem: a check that passed may never have checked.
+- `claim-sweep` - once the write does land, find every other artifact still asserting what it changed.
+
+<!-- /generated:siblings -->

@@ -29,6 +29,16 @@ jobs:
           node-version: ${{ matrix.node }}
       - run: node --test
       - run: node scripts/check-house-style.mjs
+      # The skill, graded by the tool this organisation publishes for grading
+      # skills. Added 2026-09-04, after a description edit put an unquoted colon
+      # inside a YAML scalar, broke the frontmatter, and turned an A(100) into an
+      # F(55) with no `name` and no `description` at all. Nothing in this repo
+      # would have said a word: the tests check the installer, and a skill whose
+      # frontmatter does not parse still installs perfectly.
+      #
+      # --strict so a warning stops the build too. A skill this set publishes
+      # about not trusting a clean result should not ship on an ungraded one.
+      - run: npx -y efaimo check --skill ./SKILL.md --strict
       # The end to end path a reader takes, run for real: pack the package the
       # way npm would, install it from that tarball, and make it install itself
       # into a scratch directory. A unit test can pass while `files` in

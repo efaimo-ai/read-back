@@ -1,7 +1,7 @@
 {
   "name": "read-back",
   "version": "0.1.0",
-  "description": "immediately after any write a tool reported as successful and before running anything that depends on it or calling the change done - a file edited through a shell command, a patch...",
+  "description": "immediately after any write a tool reported as successful, and before running anything that depends on it - a file edited through a shell command, a patch applied with sed or perl, a...",
   "type": "module",
   "license": "Apache-2.0",
   "author": "efaimo ai (https://efaimo.ai)",
