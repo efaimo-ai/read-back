@@ -4,20 +4,20 @@ All notable changes to read-back are documented here. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); this project uses
 [Semantic Versioning](https://semver.org/).
 
-## [0.1.0] - 2026-09-04
+## [Unreleased]
 
-> **Published without provenance, and only this version.** npm's trusted
-> publishing is configured from an existing package's settings page, so it cannot
-> create a package that has never been published: the first publish has to come
-> from an authenticated session, which cannot mint an OIDC attestation. From the
-> next version the release workflow owns it and every release carries SLSA
-> provenance naming the commit that built it. There is no GitHub Release for this
-> version either, because cutting one by hand stamps an operator's personal
-> account onto a page that cannot be edited afterwards.
+> **Not published yet.** This entry describes what is on `main` and is
+> dated when it ships. The first publish of `read-back` cannot carry provenance:
+> npm's trusted publishing is configured from an existing package's settings
+> page, so it cannot create a package that has never been published, and the
+> authenticated session that can create one cannot mint an OIDC attestation.
+> From the version after that the release workflow owns it and every release
+> carries SLSA provenance naming the commit that built it. Install it from the
+> repository in the meantime; the README carries the command.
 
 ### Added
 
-- **The skill is installable.** `npx read-back` copies `SKILL.md` and its
+- **The skill is installable.** `npx -y github:efaimo-ai/read-back` copies `SKILL.md` and its
   `references/` into `./.claude/skills/read-back/`, with `--global`, `--dir`,
   `--check`, `--print`, `--uninstall` and `--force`. The installer reads every
   byte back after writing it and fails if what landed is not what it wrote, and
@@ -36,4 +36,4 @@ All notable changes to read-back are documented here. Format follows
   `efaimo check --skill` before and after, and the package version and the
   version in `SKILL.md` frontmatter are one number, pinned by a test.
 
-[0.1.0]: https://github.com/efaimo-ai/read-back/releases/tag/v0.1.0
+[Unreleased]: https://github.com/efaimo-ai/read-back/commits/main

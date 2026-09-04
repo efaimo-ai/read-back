@@ -1,6 +1,5 @@
 # read-back
 
-[![npm](https://img.shields.io/npm/v/read-back?color=0b7285&label=npm)](https://www.npmjs.com/package/read-back)
 [![license](https://img.shields.io/badge/license-Apache--2.0-0b7285)](LICENSE)
 [![grade](https://img.shields.io/badge/efaimo%20check--skill-A%20(100)-0b7285)](https://efaimo.ai/skills)
 [![house-style](https://github.com/efaimo-ai/read-back/actions/workflows/house-style.yml/badge.svg)](https://github.com/efaimo-ai/read-back/actions/workflows/house-style.yml)
@@ -13,18 +12,30 @@ noticing before you build on it.
 Skill: read-back
 ```
 
-Drop the directory into your skills path. There is nothing to install and no
-dependencies; the whole thing is `SKILL.md` plus one reference file.
+No runtime, no dependencies, nothing to configure: the whole thing is
+`SKILL.md` plus one reference file, and any way of getting that directory onto
+your skills path works.
 
 <!-- generated:install -->
 
 ## Install
 
 ```sh
-npx read-back                 # into ./.claude/skills/read-back/
-npx read-back --global        # into ~/.claude/skills/read-back/
-npx read-back --check         # installed, and current?
+# into ./.claude/skills/read-back/
+npx -y github:efaimo-ai/read-back
+
+# into ~/.claude/skills/read-back/, for every project
+npx -y github:efaimo-ai/read-back --global
+
+# installed already, and still current?
+npx -y github:efaimo-ai/read-back --check
 ```
+
+That is the repository, not the registry, and it is deliberate: `read-back` is
+not on npm yet, and a README that prints `npx read-back` today would be
+advertising a command that 404s. The line above works right now. The day the
+package publishes it becomes `npx read-back`, and this README is regenerated from
+a committed registry probe rather than from anybody's memory.
 
 The package is the skill: `SKILL.md` and its `references/`, nothing else. The
 installer copies them, reads every byte back, and fails if what landed is not
@@ -32,7 +43,7 @@ what it wrote. It refuses to overwrite a directory whose contents differ unless
 you pass `--force`, and installing the same version twice is a success rather
 than a conflict.
 
-Or take it by hand. It is markdown; `npx read-back --print` writes `SKILL.md` to
+Or take it by hand. It is markdown; `npx -y github:efaimo-ai/read-back --print` writes `SKILL.md` to
 stdout, and the repository is the whole thing.
 
 <!-- /generated:install -->
@@ -117,7 +128,7 @@ ever fires.
 
 ```mermaid
 flowchart LR
-    N["npx read-back"] --> D[/".claude/skills/read-back/"/]
+    N["npx -y github:efaimo-ai/read-back"] --> D[/".claude/skills/read-back/"/]
     D --> M["frontmatter<br/><b>every session, always</b>"]
     D --> B["SKILL.md body<br/><i>only when it triggers</i>"]
     D --> R["references/<br/><i>only if the agent reads them</i>"]
