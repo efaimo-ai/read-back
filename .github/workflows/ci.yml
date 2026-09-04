@@ -37,12 +37,25 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          # No absolute path is ever interpolated into a JS string or handed to
+          # npm across a shell here, and that is not fastidiousness. The first
+          # version of this step read the package name with
+          # `node -e "require('$GITHUB_WORKSPACE/package.json')"`, and on Windows
+          # that path is D:\a\read-back\read-back, so \r became a carriage return
+          # and the module resolver looked for "D:a<CR>ead-back". Six repos went
+          # red at once, including read-back's, whose whole subject is a shell
+          # rewriting the payload it carries.
+          #
+          # So: a relative require, and the tarball is copied next to the consumer
+          # rather than referenced across directories.
+          name=$(node -p "require('./package.json').name")
           tarball=$(npm pack --silent)
-          mkdir -p "$RUNNER_TEMP/consumer" && cd "$RUNNER_TEMP/consumer"
+          mkdir -p "$RUNNER_TEMP/consumer"
+          cp "$tarball" "$RUNNER_TEMP/pkg.tgz"
+          cd "$RUNNER_TEMP/consumer"
           npm init -y >/dev/null
-          npm install --no-audit --no-fund "$GITHUB_WORKSPACE/$tarball" >/dev/null
-          name=$(node -e "console.log(require('$GITHUB_WORKSPACE/package.json').name)")
-          npx --no-install "$name" --dir "$RUNNER_TEMP/skills"
-          npx --no-install "$name" --dir "$RUNNER_TEMP/skills" --check
-          test -f "$RUNNER_TEMP/skills/$name/SKILL.md"
-          echo "installed $name from its own tarball and the check agreed"
+          npm install --no-audit --no-fund ../pkg.tgz >/dev/null
+          npx --no-install "$name" --dir skills
+          npx --no-install "$name" --dir skills --check
+          test -f "skills/$name/SKILL.md"
+          echo "installed $name from its own tarball into skills/$name and the check agreed"
