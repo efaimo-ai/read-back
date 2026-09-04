@@ -138,11 +138,75 @@ test("an unknown flag is exit 2, not a silent install", () => {
 test("--help and --version answer without touching the disk", () => {
   const h = run(["--help"]);
   assert.equal(h.status, 0);
-  assert.match(h.stdout, new RegExp(`npx ${NAME}`));
+  assert.match(h.stdout, new RegExp(`^${NAME} - install this Agent Skill`));
+  for (const flag of ["--global", "--dir", "--print", "--check", "--uninstall", "--force"]) {
+    assert.ok(h.stdout.includes(flag), `--help does not mention ${flag}`);
+  }
 
   const v = run(["--version"]);
   assert.equal(v.status, 0);
   assert.equal(v.stdout.trim(), JSON.parse(readFileSync(join(ROOT, "package.json"), "utf8")).version);
+});
+
+// This test used to assert the opposite. It required `--help` to print
+// `npx <name>`, which was a 404 for every package in this set on the day it was
+// written: nothing was on npm. Code and test agreed, so nothing went red, which
+// is carrier 5 in `claim-sweep` - an assertion encoding the old value makes the
+// bug and the test agree. The help text names flags now, because this package
+// can be reached three ways and cannot know which one you used.
+test("--help does not advertise an install command it cannot verify", () => {
+  const h = run(["--help"]);
+  assert.ok(!/\bnpx\s/.test(h.stdout), `--help prints an npx line:\n${h.stdout}`);
+  assert.ok(!/\bnpm\s+i\b|\bnpm\s+install\b/.test(h.stdout), `--help prints an npm install line:\n${h.stdout}`);
+});
+
+test("--dir with no path is a refusal, not an install somewhere else", () => {
+  const dir = tmp();
+  const r = run(["--dir"], dir);
+  assert.equal(r.status, 2, out(r));
+  assert.match(out(r), /needs a path/);
+  // The failure this catches: falling through to the project default and
+  // reporting success for a directory the caller never named.
+  assert.ok(!existsSync(join(dir, ".claude")), "it installed into the default instead of refusing");
+  rmSync(dir, { recursive: true, force: true });
+});
+
+test("--dir followed by a flag is a refusal, not a directory named --global", () => {
+  const dir = tmp();
+  const r = run(["--dir", "--global"], dir);
+  assert.equal(r.status, 2, out(r));
+  assert.match(out(r), /is a flag/);
+  assert.ok(!existsSync(join(dir, "--global")), "it created a directory named after the flag");
+  rmSync(dir, { recursive: true, force: true });
+});
+
+// The assertion is the installer's OWN sentence, not the word "directory".
+// The first version matched /not a directory/, which is also what Node's ENOTDIR
+// says, so it passed with the guard deleted: the crash handler caught the mkdir
+// and produced a message containing the same words. Two fixes, one test, and no
+// way to tell which one was doing the work. Found by deleting the guard and
+// watching nothing go red.
+test("--dir pointed at a file is refused before anything is attempted", () => {
+  const dir = tmp();
+  const f = join(dir, "afile");
+  writeFileSync(f, "not a directory\n");
+  const r = run(["--dir", f]);
+  assert.equal(r.status, 2, out(r));
+  assert.match(out(r), new RegExp(`--dir .*afile is not a directory`), out(r));
+  assert.ok(!/ {4}at /.test(out(r)), `a stack trace reached the user:\n${out(r)}`);
+  rmSync(dir, { recursive: true, force: true });
+});
+
+test("a filesystem error is exit 2, not exit 1 with a stack", () => {
+  // --dir under a path whose PARENT is a file: the base does not exist, so the
+  // is-it-a-directory guard cannot see it, and mkdir is where it breaks.
+  const dir = tmp();
+  const f = join(dir, "afile");
+  writeFileSync(f, "not a directory\n");
+  const r = run(["--dir", join(f, "sub")]);
+  assert.equal(r.status, 2, out(r));
+  assert.ok(!/ {4}at /.test(out(r)), `a stack trace reached the user:\n${out(r)}`);
+  rmSync(dir, { recursive: true, force: true });
 });
 
 test("the package version and the skill's own version are one number", () => {

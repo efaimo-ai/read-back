@@ -38,6 +38,15 @@ jobs:
       #
       # --strict so a warning stops the build too. A skill this set publishes
       # about not trusting a clean result should not ship on an ungraded one.
+      #
+      # Unpinned, which makes this the one non-hermetic step in the file: a new
+      # efaimo release with a stricter rule can turn all six repos red without a
+      # commit here. That is the trade being made rather than an oversight. The
+      # point of the step is that the skill still grades under the tool as it
+      # ships TODAY, and pinning it would grade against a version no reader has.
+      # The organisation's rule about pinning `npx` (see the site repo's wrangler
+      # note) is about a command holding credentials; this job is contents: read
+      # and holds none, and the publish job that does hold them runs no npx.
       - run: npx -y efaimo check --skill ./SKILL.md --strict
       # The end to end path a reader takes, run for real: pack the package the
       # way npm would, install it from that tarball, and make it install itself

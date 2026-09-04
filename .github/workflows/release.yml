@@ -6,9 +6,16 @@ name: release
 #
 # This cannot make the FIRST publish. npm's trusted publishing is configured
 # from an existing package's settings page, so a package that has never been
-# published has no page to configure and the PUT answers 404. Version 0.1.0 of
-# every skill in this set was therefore published from an authenticated session
-# and carries no provenance; from 0.1.1 this workflow owns it.
+# published has no page to configure and the PUT answers 404. The first version
+# of each skill therefore has to come from an authenticated session and will
+# carry no provenance; from the version after it, this workflow owns it.
+#
+# Written in the future tense on purpose. It said "version 0.1.0 was therefore
+# published from an authenticated session" until 2026-09-05, in six public
+# repositories, and nothing in this set was on npm: a past-tense sentence about
+# a publish that had not happened, in the workflow that would have performed it.
+# `skill-pkg/release-state.mjs` holds the CHANGELOGs to the registry, and it
+# does not read this file, which is why this one lasted a day longer.
 #
 # Do NOT run `gh release create` by hand: GitHub attributes a release to whoever
 # created it, and that stamps an operator's personal account onto a public page
