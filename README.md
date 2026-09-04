@@ -131,7 +131,7 @@ flowchart LR
 ```
 
 In this skill's case, measured by [efaimo](https://github.com/efaimo-ai/efaimo) `weigh` (v0.5.0, 2026-09-04):
-**81 tokens always resident**, 1,111 when it triggers, and no reference files at all.
+**81 tokens always resident**, 1,172 when it triggers, 1,717 across 1 reference file if the agent reads to the end.
 
 <!-- /generated:pipeline -->
 

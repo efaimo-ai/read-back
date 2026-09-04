@@ -77,6 +77,11 @@ Be most suspicious when any of these is true.
   first attempt wrote nothing and the second is matching its own absence.
 - The file is large or generated and you were never going to open it.
 
+Real ones, with what each printed and how it announced itself, are in
+[references/failure-gallery.md](references/failure-gallery.md): the loud ones,
+the quiet ones that reported success and wrote something else, and the ones that
+are correct on your machine and corrupt on a colleague's.
+
 ## What this is not
 
 This is not "avoid the shell." The shell is excellent at moving bytes between
