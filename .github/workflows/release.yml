@@ -1,0 +1,65 @@
+name: release
+# GENERATED FILE. Source of truth: startup/skill-pkg/template/.github/workflows/release.yml
+#
+# Publishes to npm with SLSA provenance over OIDC on a v*.*.* tag, then cuts the
+# GitHub Release. No secret is involved.
+#
+# This cannot make the FIRST publish. npm's trusted publishing is configured
+# from an existing package's settings page, so a package that has never been
+# published has no page to configure and the PUT answers 404. Version 0.1.0 of
+# every skill in this set was therefore published from an authenticated session
+# and carries no provenance; from 0.1.1 this workflow owns it.
+#
+# Do NOT run `gh release create` by hand: GitHub attributes a release to whoever
+# created it, and that stamps an operator's personal account onto a public page
+# that cannot be edited afterwards.
+on:
+  push:
+    tags: ["v*.*.*"]
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+      - run: node --test
+      - run: node scripts/check-house-style.mjs
+      # OIDC trusted publishing needs npm >= 11.5.1 and the runner may bundle an
+      # older 11.x. Pinned exactly, not `@latest`: this runs in the job that
+      # holds id-token: write, so whatever the registry served that minute would
+      # execute next to the publish credentials.
+      - run: npm install -g npm@11.19.0
+      - run: npm publish --provenance --access public
+        if: startsWith(github.ref, 'refs/tags/v')
+      - run: npm publish --dry-run
+        if: github.event_name == 'workflow_dispatch'
+      - name: cut the GitHub Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          if gh release view "$GITHUB_REF_NAME" >/dev/null 2>&1; then
+            echo "release $GITHUB_REF_NAME already exists; leaving it alone"
+            exit 0
+          fi
+          name=$(node -e "console.log(require('./package.json').name)")
+          if [ -f CHANGELOG.md ]; then
+            awk -v v="${GITHUB_REF_NAME#v}" '
+              $0 ~ "^## \\[" v "\\]" { f = 1; next }
+              f && (/^## \[/ || /^\[[^]]*\]: http/) { exit }
+              f { print }
+            ' CHANGELOG.md > "$RUNNER_TEMP/notes.md"
+          fi
+          if [ -s "$RUNNER_TEMP/notes.md" ] && grep -q '[^[:space:]]' "$RUNNER_TEMP/notes.md"; then
+            gh release create "$GITHUB_REF_NAME" --title "$name $GITHUB_REF_NAME" --notes-file "$RUNNER_TEMP/notes.md"
+          else
+            gh release create "$GITHUB_REF_NAME" --title "$name $GITHUB_REF_NAME" --generate-notes
+          fi

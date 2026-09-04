@@ -1,0 +1,48 @@
+name: ci
+# GENERATED FILE. Source of truth: startup/skill-pkg/template/.github/workflows/ci.yml
+#
+# There is no build and no dependency to install, so CI is the three things that
+# can actually be wrong: the installer's behaviour, the house rule, and whether
+# the package that npm would publish still contains a skill.
+#
+# Windows is in the matrix because this package's whole job is writing files to
+# a path, and paths are where POSIX-only testing goes blind.
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        node: [20, 24]
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: ${{ matrix.node }}
+      - run: node --test
+      - run: node scripts/check-house-style.mjs
+      # The end to end path a reader takes, run for real: pack the package the
+      # way npm would, install it from that tarball, and make it install itself
+      # into a scratch directory. A unit test can pass while `files` in
+      # package.json quietly stops shipping references/.
+      - name: install from a packed tarball, the way a reader gets it
+        shell: bash
+        run: |
+          set -euo pipefail
+          tarball=$(npm pack --silent)
+          mkdir -p "$RUNNER_TEMP/consumer" && cd "$RUNNER_TEMP/consumer"
+          npm init -y >/dev/null
+          npm install --no-audit --no-fund "$GITHUB_WORKSPACE/$tarball" >/dev/null
+          name=$(node -e "console.log(require('$GITHUB_WORKSPACE/package.json').name)")
+          npx --no-install "$name" --dir "$RUNNER_TEMP/skills"
+          npx --no-install "$name" --dir "$RUNNER_TEMP/skills" --check
+          test -f "$RUNNER_TEMP/skills/$name/SKILL.md"
+          echo "installed $name from its own tarball and the check agreed"

@@ -1,0 +1,44 @@
+{
+  "name": "read-back",
+  "version": "0.1.0",
+  "description": "immediately after any write a tool reported as successful and before running anything that depends on it or calling the change done - a file edited through a shell command, a patch...",
+  "type": "module",
+  "license": "Apache-2.0",
+  "author": "efaimo ai (https://efaimo.ai)",
+  "homepage": "https://efaimo.ai/skills",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/efaimo-ai/read-back.git"
+  },
+  "bugs": {
+    "url": "https://github.com/efaimo-ai/read-back/issues"
+  },
+  "keywords": [
+    "agent-skill",
+    "agent-skills",
+    "claude",
+    "claude-code",
+    "ai-agents",
+    "mcp"
+  ],
+  "bin": {
+    "read-back": "bin/install.mjs"
+  },
+  "files": [
+    "SKILL.md",
+    "references",
+    "bin",
+    "NOTICE"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "node --test",
+    "house-style": "node scripts/check-house-style.mjs"
+  },
+  "publishConfig": {
+    "provenance": true,
+    "access": "public"
+  }
+}
