@@ -131,28 +131,61 @@ flowchart LR
 ```
 
 In this skill's case, measured by [efaimo](https://github.com/efaimo-ai/efaimo) `weigh` (v0.5.0, 2026-09-04):
-**108 tokens always resident**, 1,138 when it triggers, and no reference files at all.
+**81 tokens always resident**, 1,111 when it triggers, and no reference files at all.
 
 <!-- /generated:pipeline -->
 
+<!-- generated:set -->
+
 ## The set
 
-Seven skills, each one a discipline that cost something to learn.
+Every skill in this set is about a report that was true about the wrong thing.
 
-| skill | the question it asks |
-|---|---|
-| [`red-before-green`](https://github.com/efaimo-ai/red-before-green) | can this check fail at all? |
-| [`denominator`](https://github.com/efaimo-ai/denominator) | how much of the world can it see? |
-| **`read-back`** (this one) | did the write actually apply? |
-| [`claim-sweep`](https://github.com/efaimo-ai/claim-sweep) | what else still asserts the old value? |
-| [`unreleased-guard`](https://github.com/efaimo-ai/unreleased-guard) | does the copy describe what shipped? |
-| [`honest-chart`](https://github.com/efaimo-ai/honest-chart) | is the picture proportional to the data? |
-| [`mcp-stateless-migration`](https://github.com/efaimo-ai/mcp-stateless-migration) | does this server match the 2026-07-28 spec? |
+| skill | something reported | what the report was really about |
+|---|---|---|
+| [`red-before-green`](https://github.com/efaimo-ai/red-before-green) | a check said clean | whether it ran at all |
+| [`denominator`](https://github.com/efaimo-ai/denominator) | a check said clean | how much of the world it saw |
+| **`read-back`** | a write said done | whether it applied |
+| [`claim-sweep`](https://github.com/efaimo-ai/claim-sweep) | a change said done | everything else still asserting the old value |
+| [`unreleased-guard`](https://github.com/efaimo-ai/unreleased-guard) | a document said true | which version it is true of |
+| [`honest-chart`](https://github.com/efaimo-ai/honest-chart) | a picture said the data | whether its geometry is proportional |
+| [`mcp-stateless-migration`](https://github.com/efaimo-ai/mcp-stateless-migration) | a server said ok | which revision it speaks |
+| [`efaimo`](https://github.com/efaimo-ai/efaimo) | a tool said A(100) | what a grade certifies, and what it costs |
 
-All of them are audited by [`efaimo`](https://github.com/efaimo-ai/efaimo), the
-CLI that measures the quality and context-window cost of MCP servers and Agent
-Skills. The index of every public skill it can find, graded, is at
-[efaimo.ai/skills](https://efaimo.ai/skills).
+```mermaid
+graph TD
+    red_before_green["red-before-green"]
+    denominator["denominator"]
+    read_back["read-back"]
+    claim_sweep["claim-sweep"]
+    unreleased_guard["unreleased-guard"]
+    honest_chart["honest-chart"]
+    mcp_stateless_migration["mcp-stateless-migration"]
+    efaimo["efaimo"]
+    red_before_green --- denominator
+    red_before_green --- read_back
+    denominator --- claim_sweep
+    read_back --- claim_sweep
+    claim_sweep --- red_before_green
+    claim_sweep --- unreleased_guard
+    unreleased_guard --- red_before_green
+    honest_chart --- red_before_green
+    honest_chart --- read_back
+    mcp_stateless_migration --- unreleased_guard
+    mcp_stateless_migration --- red_before_green
+    efaimo --- denominator
+    efaimo --- mcp_stateless_migration
+    classDef self fill:#0b728533,stroke:#0b7285,stroke-width:2px;
+    class read_back self;
+```
+
+Each edge is a real handoff, not a category: the reason one skill points at
+another is written into it at [efaimo.ai/skills](https://efaimo.ai/skills), and
+in the `Siblings` section of every `SKILL.md`. All of them are graded and
+weighed by [`efaimo`](https://github.com/efaimo-ai/efaimo), the CLI that measures
+what an agent loads.
+
+<!-- /generated:set -->
 
 ## License
 
