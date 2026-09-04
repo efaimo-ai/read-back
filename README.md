@@ -1,5 +1,9 @@
 # read-back
 
+[![license](https://img.shields.io/badge/license-Apache--2.0-0b7285)](LICENSE)
+[![grade](https://img.shields.io/badge/efaimo%20check--skill-A%20(100)-0b7285)](https://efaimo.ai/skills)
+[![house-style](https://github.com/efaimo-ai/read-back/actions/workflows/house-style.yml/badge.svg)](https://github.com/efaimo-ai/read-back/actions/workflows/house-style.yml)
+
 An Agent Skill. **A write that reported success may not have applied, or may
 have applied something other than what you wrote.** This is the discipline for
 noticing before you build on it.
@@ -10,6 +14,26 @@ Skill: read-back
 
 Drop the directory into your skills path. There is nothing to install and no
 dependencies; the whole thing is `SKILL.md` plus one reference file.
+
+## Where a write goes wrong
+
+```mermaid
+flowchart LR
+    W["what you wrote"] --> S["the shell<br/><i>expands, splits, quotes</i>"]
+    S --> C["what the command received"]
+    C --> T["the tool<br/><i>sed, perl, replace, patch</i>"]
+    T --> F["what landed on disk"]
+    T --> E["<b>exit 0</b>"]
+    E -. "says nothing about" .-> F
+    F --> RB["read it back<br/>and compare"]
+    classDef pass fill:#0b728522,stroke:#0b7285;
+    classDef fail fill:#c9282822,stroke:#c92828;
+    class RB pass;
+    class E fail;
+```
+
+Two independent ways to succeed at nothing: a shell that rewrote the payload it
+carried, and a replacement that matched nothing and exited 0 for it.
 
 ## The problem
 
@@ -60,10 +84,26 @@ code of 0.
 
 Apache-2.0. See `LICENSE` and `NOTICE`.
 
-Part of [efaimo ai](https://efaimo.ai). Its sibling skills are
-[claim-sweep](https://github.com/efaimo-ai/claim-sweep),
-[red-before-green](https://github.com/efaimo-ai/red-before-green),
-[honest-chart](https://github.com/efaimo-ai/honest-chart) and
-[unreleased-guard](https://github.com/efaimo-ai/unreleased-guard);
-[efaimo](https://github.com/efaimo-ai/efaimo) is the CLI that audits the quality
-and context cost of MCP servers and Agent Skills, including this one.
+
+## The set
+
+Seven skills, each one a discipline that cost something to learn.
+
+| skill | the question it asks |
+|---|---|
+| [`red-before-green`](https://github.com/efaimo-ai/red-before-green) | can this check fail at all? |
+| [`denominator`](https://github.com/efaimo-ai/denominator) | how much of the world can it see? |
+| **`read-back`** (this one) | did the write actually apply? |
+| [`claim-sweep`](https://github.com/efaimo-ai/claim-sweep) | what else still asserts the old value? |
+| [`unreleased-guard`](https://github.com/efaimo-ai/unreleased-guard) | does the copy describe what shipped? |
+| [`honest-chart`](https://github.com/efaimo-ai/honest-chart) | is the picture proportional to the data? |
+| [`mcp-stateless-migration`](https://github.com/efaimo-ai/mcp-stateless-migration) | does this server match the 2026-07-28 spec? |
+
+All of them are audited by [`efaimo`](https://github.com/efaimo-ai/efaimo), the
+CLI that measures the quality and context-window cost of MCP servers and Agent
+Skills. The index of every public skill it can find, graded, is at
+[efaimo.ai/skills](https://efaimo.ai/skills).
+
+## License
+
+Apache-2.0. See [`LICENSE`](LICENSE) and [`NOTICE`](NOTICE).
