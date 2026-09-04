@@ -4,16 +4,14 @@ All notable changes to read-back are documented here. Format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/); this project uses
 [Semantic Versioning](https://semver.org/).
 
-## [Unreleased]
+## [0.1.0] - 2026-09-05
 
-> **Not published yet.** This entry describes what is on `main` and is
-> dated when it ships. The first publish of `read-back` cannot carry provenance:
-> npm's trusted publishing is configured from an existing package's settings
-> page, so it cannot create a package that has never been published, and the
-> authenticated session that can create one cannot mint an OIDC attestation.
-> From the version after that the release workflow owns it and every release
-> carries SLSA provenance naming the commit that built it. Install it from the
-> repository in the meantime; the README carries the command.
+> **Published without provenance, and only this version.** npm's trusted
+> publishing is configured from an existing package's settings page, so it
+> cannot create a package that has never been published: this first publish
+> came from an authenticated session, which cannot mint an OIDC attestation.
+> From the next version the release workflow owns it and every release carries
+> SLSA provenance naming the commit that built it.
 
 ### Added
 
@@ -36,4 +34,4 @@ All notable changes to read-back are documented here. Format follows
   `efaimo check --skill` before and after, and the package version and the
   version in `SKILL.md` frontmatter are one number, pinned by a test.
 
-[Unreleased]: https://github.com/efaimo-ai/read-back/commits/main
+[0.1.0]: https://github.com/efaimo-ai/read-back/releases/tag/v0.1.0
