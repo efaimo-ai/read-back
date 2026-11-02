@@ -4,7 +4,7 @@ description: Use immediately after any write a tool reported as successful, and 
 license: Apache-2.0
 metadata:
   version: "0.1.0"
-  homepage: "https://efaimo.ai"
+  homepage: "https://efaimo.com"
   verified_against: "2026-09-03"
 ---
 
@@ -97,7 +97,7 @@ reading it as though it did.
 
 ## Siblings
 
-Every skill in this set is about a report that was true about the wrong thing. The set: https://efaimo.ai/skills
+Every skill in this set is about a report that was true about the wrong thing. The set: https://efaimo.com/skills
 
 - `red-before-green` - the instrument half of the same problem: a check that passed may never have checked.
 - `claim-sweep` - once the write does land, find every other artifact still asserting what it changed.
